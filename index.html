@@ -362,6 +362,9 @@
             this.classList.add('hidden');
             document.querySelector('#content').style.display = 'block';
             document.querySelector('#background-music').play();
+             var video = document.querySelector('#background-video');
+            video.currentTime = 0;
+            video.play();
         });
     
         const phrases = [
