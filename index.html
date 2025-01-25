@@ -303,13 +303,7 @@
 
     <div class="cursor" id="cursor"></div>
 
-    <video autoplay muted loop class="background-video">
-        <source src="assets/background.mp4" type="video/mp4">
-    </video>
 
-     <audio id="background-music" loop>
-        <source src="music.mp3" type="audio/mp3">
-    </audio>
    
 
 
@@ -358,17 +352,24 @@
             </div>
         </div>
     </div>
+<video id="background-video" autoplay muted loop class="background-video">
+        <source src="background.mp4" type="video/mp4">
+    </video>
 
+    <audio id="background-music" loop>
+        <source src="music.mp3" type="audio/mp3">
+    </audio>
     <script>
         document.querySelector('#overlay').addEventListener('click', function() {
             this.classList.add('hidden');
             document.querySelector('#content').style.display = 'block';
             document.querySelector('#background-music').play();
-             var video = document.querySelector('#background-video');
+
+            var video = document.querySelector('#background-video');
             video.currentTime = 0;
             video.play();
         });
-    
+
         const phrases = [
             "FunSky Moderator",
             "Always On Top"
