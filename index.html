@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>alway - always</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            background-color: #000;
+            cursor: none;
+        }
+
+        .cursor {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: white;
+            border-radius: 50%;
+            pointer-events: none;
+            transition: transform 0.1s ease;
+            z-index: 9999;
+        }
+
+        .background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -3;
+            filter: blur(5px);
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 3rem;
+            text-align: center;
+            z-index: 2;
+            transition: opacity 0.5s ease;
+        }
+
+        .overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .content {
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            display: none;
+            color: white;
+            max-width: 350px;
+            width: 100%;
+        }
+
+        .profile-container {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            max-width: 350px;
+            width: 100%;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            position: relative;
+            margin-top: 20px;
+            z-index: 4;
+            min-height: 400px;
+            transition: min-height 0.3s ease;
+            transform: perspective(1000px) rotateX(var(--xv)) rotateY(var(--yv));
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+
+        :root {
+            --xv: 0deg;
+            --yv: 0deg;
+        }
+
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto;
+            animation: spinAvatar 10s linear infinite;
+        }
+
+        @keyframes spinAvatar {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .username {
+    font-size: 2.5rem;
+    margin-top: 20px;
+    text-transform: capitalize;
+    font-weight: 600;
+    position: relative;
+    display: block;
+}
+
+
+        .uid {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .username:hover .uid {
+            opacity: 1;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .badges-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 5px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .badge img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .badge-name {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .badge:hover .badge-name {
+            opacity: 1;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .badge:hover {
+            transform: translateY(-5px);
+        }
+
+        .profile-description {
+            margin-top: 20px;
+            font-size: 1.2rem;
+        }
+
+        .line {
+            width: 80%;
+            height: 2px;
+            background-color: white;
+            margin: 20px auto;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .social-icons .icon {
+            width: 40px;
+            height: 40px;
+            background-color: transparent;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .social-icons .icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .social-icons .icon:hover img {
+            transform: scale(1.1);
+        }
+
+        .social-icons .icon:hover {
+            transform: translateY(-5px);
+        }
+
+        .social-icons .icon .social-name {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .social-icons .icon:hover .social-name {
+            opacity: 1;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor" id="cursor"></div>
+
+    <video autoplay muted loop class="background-video">
+        <source src="background.mp4" type="video/mp4">
+    </video>
+
+    <audio id="background-music" loop>
+        <source src="music.mp3" type="audio/mp3">
+    </audio>
+
+    <div class="overlay" id="overlay">
+        <span>[Hey! Click To Enter]</span>
+    </div>
+
+    <div class="content" id="content">
+        <div class="profile-container" id="profile-container">
+            <div class="avatar-container">
+                <img src="avatar.gif" alt="scamexit Avatar" class="avatar">
+            </div>
+
+            <div class="username">
+                Alway
+                <div class="uid">UID: 1488</div>
+            </div>
+
+            <div class="badges-container">
+                <div class="badge" title="Owner">
+                    <img src="owner.png" alt="Owner Badge">
+                    <div class="badge-name">Owner Badge</div>
+                </div>
+                <div class="badge" title="Dev">
+                    <img src="dev.png" alt="Developer Badge">
+                    <div class="badge-name">Dev Badge</div>
+                </div>
+                <div class="badge" title="Staff">
+                    <img src="staff.png" alt="Staff Badge">
+                    <div class="badge-name">Staff Badge</div>
+                </div>
+            </div>
+<!-- Блок статуса Discord -->
+<div class="status-container" id="status-container">
+    <img id="status-avatar" src="" alt="Avatar">
+    <div class="status-info">
+        <p id="status-name">always341</p>
+        <p id="status-text">Loading...</p>
+    </div>
+</div>
+
+<style>
+    .status-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 10px 15px;
+        border-radius: 10px;
+        max-width: 220px;
+        margin: 20px auto;
+        color: white;
+        font-size: 1rem;
+    }
+    #status-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+    .status-info {
+        text-align: left;
+    }
+    #status-name {
+        font-weight: bold;
+        font-size: 1rem;
+    }
+    #status-text {
+        font-size: 0.9rem;
+        color: #bbb;
+    }
+</style>
+
+<script>
+    async function fetchDiscordStatus() {
+        const userId = "1278440640526680087";
+        const response = await fetch(`https://api.lanyard.rest/v1/users/${userId}`);
+        const data = await response.json();
+
+        if (!data.success) {
+            console.error("Ошибка загрузки данных:", data);
+            document.getElementById("status-text").textContent = "Failed to load";
+            return;
+        }
+
+        const user = data.data.discord_user;
+        const status = data.data.discord_status;
+        const avatarUrl = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=512`;
+
+        document.getElementById("status-avatar").src = avatarUrl;
+        document.getElementById("status-name").textContent = user.username;
+
+        const statusText = document.getElementById("status-text");
+        switch (status) {
+            case "online":
+                statusText.textContent = "🟢 Online";
+                break;
+            case "idle":
+                statusText.textContent = "🟠 Idle";
+                break;
+            case "dnd":
+                statusText.textContent = "🔴 Do Not Disturb";
+                break;
+            case "offline":
+                statusText.textContent = "⚫ Offline";
+                break;
+            default:
+                statusText.textContent = "Unknown";
+        }
+    }
+
+    fetchDiscordStatus();
+</script>
+
+            <p class="profile-description">
+                <span id="typing-text"></span>
+            </p>
+
+            <div class="line"></div>
+
+             <div class="social-icons">
+                <div class="icon" onclick="window.open('https://steamcommunity.com/id/korsaki/', '_blank');">
+                    <img src="steam.gif" alt="Steam">
+                    <div class="social-name">Steam</div>
+                </div>
+                <div class="icon" onclick="window.open('https://netidinahuy', '_blank');">
+                    <img src="telegram.gif" alt="Telegram">
+                    <div class="social-name">Telegram</div>
+                </div>
+                <div class="icon" onclick="window.open('https://discordapp.com/users/1278440640526680087/', '_blank');">
+                    <img src="discord.gif" alt="Discord">
+                    <div class="social-name">Discord</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('#overlay').addEventListener('click', function() {
+            this.classList.add('hidden');
+            document.querySelector('#content').style.display = 'block';
+            document.querySelector('#background-music').play();
+        });
+    
+        const phrases = [
+            "Always come back",
+            "Always On Top"
+        ];
+        const typingTextElement = document.getElementById('typing-text');
+        let currentPhraseIndex = 0;
+        let currentCharIndex = 0;
+        let isDeleting = false;
+    
+        function type() {
+            const currentPhrase = phrases[currentPhraseIndex];
+            const delay = isDeleting ? 50 : 100;
+    
+            if (!isDeleting && currentCharIndex < currentPhrase.length) {
+                typingTextElement.textContent += currentPhrase[currentCharIndex];
+                currentCharIndex++;
+            } else if (isDeleting && currentCharIndex > 0) {
+                typingTextElement.textContent = currentPhrase.slice(0, currentCharIndex - 1);
+                currentCharIndex--;
+            } else if (!isDeleting && currentCharIndex === currentPhrase.length) {
+                isDeleting = true;
+                setTimeout(type, 1000);
+                return;
+            } else if (isDeleting && currentCharIndex === 0) {
+                isDeleting = false;
+                currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+            }
+    
+            setTimeout(type, delay);
+        }
+    
+        setTimeout(type, 500);
+    
+        const profileContainer = document.getElementById('profile-container');
+        let rotateY = 0;
+        let rotateX = 0;
+    
+        profileContainer.addEventListener('mousemove', function (e) {
+            const rect = profileContainer.getBoundingClientRect();
+            const sensitivity = 42;
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+    
+            rotateX = ((y / rect.height) - 0.5) * sensitivity;
+            rotateY = ((x / rect.width) - 0.5) * -sensitivity;
+    
+            profileContainer.style.setProperty('--xv', `${rotateX}deg`);
+            profileContainer.style.setProperty('--yv', `${rotateY}deg`);
+        });
+    
+        profileContainer.addEventListener('mouseleave', function () {
+            setTimeout(() => {
+                profileContainer.style.setProperty('--xv', `0deg`);
+                profileContainer.style.setProperty('--yv', `0deg`);
+            }, 150);
+        });
+    
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = `${e.pageX - 7.5}px`;
+            cursor.style.top = `${e.pageY - 7.5}px`;
+        });
+    </script>
