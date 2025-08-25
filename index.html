@@ -24,7 +24,7 @@
             cursor: url('Cursor.cur'), auto;
         }
 
-        .background-image {
+        .background-video {
             position: absolute;
             top: 0;
             left: 0;
@@ -32,6 +32,17 @@
             height: 100%;
             object-fit: cover;
             z-index: -3;
+        }
+
+        .fallback-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -4;
+            display: none;
         }
 
         .overlay {
@@ -288,14 +299,37 @@
                 transform: translateY(110vh) rotate(360deg);
             }
         }
+        
+        .audio-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
-    <img src="background.mp4" alt="Background" class="background-image">
+    <video autoplay muted loop class="background-video" id="bg-video">
+        <source src="background.mp4" type="video/mp4">
+        Ваш браузер не поддерживает видео тег.
+    </video>
+    <img src="fallback.jpg" alt="Fallback Background" class="fallback-image" id="fallback-image">
 
     <audio id="background-music" loop>
         <source src="song.mp3" type="audio/mp3">
     </audio>
+    
+    <button class="audio-control" id="audio-toggle">🔊</button>
 
     <div class="overlay" id="overlay">
         <span>[Hey! Click To Enter]</span>
@@ -358,7 +392,7 @@
             snowflake.innerHTML = '❄';
             snowflake.style.left = `${Math.random() * 100}vw`;
             snowflake.style.animationDuration = `${Math.random() * 5 + 5}s`;
-            snowflake.style.opacity = Math.random(); // 
+            snowflake.style.opacity = Math.random();
             snowflake.style.fontSize = `${Math.random() * 30 + 10}px`;
             document.body.appendChild(snowflake);
 
@@ -371,12 +405,52 @@
     </script>
 
     <script>
+        // Проверяем, загрузилось ли видео
+        const videoElement = document.getElementById('bg-video');
+        const fallbackImage = document.getElementById('fallback-image');
+        
+        videoElement.addEventListener('error', function() {
+            console.log('Video failed to load, showing fallback image');
+            fallbackImage.style.display = 'block';
+        });
+        
+        videoElement.addEventListener('loadeddata', function() {
+            console.log('Video loaded successfully');
+            fallbackImage.style.display = 'none';
+        });
+
+        // Обработка клика по оверлею
         document.querySelector('#overlay').addEventListener('click', function() {
             this.classList.add('hidden');
             document.querySelector('#content').style.display = 'block';
-            document.querySelector('#background-music').play();
+            
+            // Попытка воспроизведения музыки с обработкой ошибок
+            const music = document.querySelector('#background-music');
+            const playPromise = music.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Autoplay prevented: ", error);
+                    document.getElementById('audio-toggle').style.display = 'flex';
+                });
+            }
         });
 
+        // Управление аудио
+        const audioToggle = document.getElementById('audio-toggle');
+        const music = document.getElementById('background-music');
+        
+        audioToggle.addEventListener('click', function() {
+            if (music.paused) {
+                music.play();
+                this.textContent = '🔊';
+            } else {
+                music.pause();
+                this.textContent = '🔈';
+            }
+        });
+
+        // Типизируемый текст
         const phrases = [
             "Always come back",
         ];
@@ -409,6 +483,7 @@
 
         setTimeout(type, 500);
 
+        // 3D эффект для профиля
         const profileContainer = document.getElementById('profile-container');
         let rotateY = 0;
         let rotateX = 0;
@@ -435,5 +510,3 @@
     </script>
 </body>
 </html>
-
-
