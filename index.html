@@ -2,47 +2,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alway</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-text-size-adjust: 100%;
-        }
-
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow-x: hidden;
-            background-color: #000;
-            touch-action: manipulation;
+            font-family: Arial, sans-serif;
         }
 
         body {
+            margin: 0;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            min-height: -webkit-fill-available;
             overflow: hidden;
             position: relative;
+            background-color: #000;
             cursor: url('Cursor.cur'), auto;
         }
 
-        @supports (-webkit-touch-callout: none) {
-            body {
-                min-height: -webkit-fill-available;
-            }
-        }
-
-        /* Видео фон - ВКЛЮЧЕНО */
         .background-video {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -52,7 +35,7 @@
         }
 
         .fallback-image {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -62,13 +45,8 @@
             display: none;
         }
 
-        /* Убираем градиентный фон */
-        body::before {
-            display: none;
-        }
-
         .overlay {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -77,33 +55,17 @@
             justify-content: center;
             align-items: center;
             color: white;
-            font-size: clamp(1.5rem, 5vw, 3rem);
+            font-size: 3rem;
             text-align: center;
             z-index: 2;
             transition: opacity 0.5s ease;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px); 
             background-color: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            user-select: none;
         }
 
         .overlay.hidden {
             opacity: 0;
             visibility: hidden;
-            pointer-events: none;
-        }
-
-        .overlay span {
-            background: linear-gradient(45deg, #fff, #a0a0a0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
         }
 
         .content {
@@ -112,198 +74,166 @@
             text-align: center;
             display: none;
             color: white;
-            max-width: min(90vw, 350px);
+            max-width: 350px;
             width: 100%;
-            padding: 10px;
         }
 
         .profile-container {
             text-align: center;
             color: white;
-            padding: clamp(15px, 4vw, 20px);
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px; 
+            max-width: 350px;
             width: 100%;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(255, 255, 255, 0.1),
-                0 0 30px rgba(41, 196, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             position: relative;
-            margin: 10px auto;
+            margin-top: 20px;
             z-index: 4;
-            min-height: min(80vh, 450px);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transform-style: preserve-3d;
-            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            min-height: 400px;
+            transition: min-height 0.3s ease;
+            transform: perspective(1000px) rotateX(var(--xv)) rotateY(var(--yv));
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        :root {
+            --xv: 0deg;
+            --yv: 0deg;
         }
 
         .avatar-container {
             position: relative;
             display: inline-block;
-            width: clamp(100px, 30vw, 150px);
-            height: clamp(100px, 30vw, 150px);
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             overflow: hidden;
-            margin: 0 auto 10px;
-            animation: spinAvatar 20s linear infinite;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 
-                0 0 20px rgba(255, 255, 255, 0.2),
-                0 0 40px rgba(41, 196, 255, 0.3);
+            margin: 0 auto;
+            animation: spinAvatar 10s linear infinite;
+            border: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         @keyframes spinAvatar {
-            0% { transform: rotate(0deg) scale(1); }
-            50% { transform: rotate(180deg) scale(1.05); }
-            100% { transform: rotate(360deg) scale(1); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .avatar {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
         }
 
         .username {
-            font-size: clamp(1.8rem, 6vw, 2.5rem);
-            margin-top: 10px;
+            font-size: 2.5rem;
+            margin-top: 20px;
             text-transform: capitalize;
             font-weight: 600;
             position: relative;
-            display: inline-block;
-            background: linear-gradient(45deg, #fff, #a0a0a0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-            cursor: default;
+            display: block;
         }
 
-        /* UID - скрыт по умолчанию, появляется при наведении на ник */
         .uid {
             position: absolute;
-            top: -30px;
+            top: -25px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.9);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: white;
             opacity: 0;
             transition: opacity 0.3s ease;
             white-space: nowrap;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            pointer-events: none;
-            z-index: 10;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
 
         .username:hover .uid {
             opacity: 1;
+            animation: fadeIn 0.5s ease;
         }
 
         .badges-container {
             display: flex;
             justify-content: center;
-            gap: 8px;
-            margin: 10px 0;
+            gap: 10px;
+            margin-top: 5px;
             flex-wrap: wrap;
-            padding: 0 10px;
         }
 
         .badge {
             position: relative;
             display: inline-block;
-            width: clamp(32px, 8vw, 40px);
-            height: clamp(32px, 8vw, 40px);
-            border-radius: 8px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(255, 255, 255, 0.15);
-            padding: 3px;
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            transition: transform 0.3s ease;
         }
 
         .badge img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            border-radius: 5px;
+            object-fit: cover;
         }
 
         .badge-name {
             position: absolute;
-            top: -35px;
+            top: -30px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.9);
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 0.8rem;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 1rem;
             color: white;
             opacity: 0;
             transition: opacity 0.3s ease;
             pointer-events: none;
             white-space: nowrap;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .badge:hover .badge-name,
-        .badge:active .badge-name {
+        .badge:hover .badge-name {
             opacity: 1;
+            animation: fadeIn 0.5s ease;
         }
 
-        .badge:hover,
-        .badge:active {
-            transform: translateY(-5px) scale(1.1);
-            background: rgba(255, 255, 255, 0.25);
+        .badge:hover {
+            transform: translateY(-5px);
         }
 
         .profile-description {
-            margin: 15px auto;
-            font-size: clamp(1rem, 3.5vw, 1.2rem);
-            line-height: 1.5;
-            min-height: 60px;
-            padding: 0 10px;
-            max-width: 90%;
-            color: rgba(255, 255, 255, 0.95);
-            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin-top: 20px;
+            font-size: 1.2rem;
         }
 
         .line {
             width: 80%;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.4), 
-                rgba(255, 255, 255, 0.7),
-                rgba(255, 255, 255, 0.4),
-                transparent);
-            margin: 15px auto;
-            border-radius: 2px;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
+            margin: 20px auto;
         }
 
         .social-icons {
             display: flex;
             justify-content: center;
-            gap: clamp(10px, 3vw, 20px);
+            gap: 20px;
             margin-top: 10px;
-            flex-wrap: wrap;
         }
 
         .social-icons .icon {
-            width: clamp(35px, 9vw, 40px);
-            height: clamp(35px, 9vw, 40px);
+            width: 40px;
+            height: 40px;
             background-color: transparent;
             position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease;
             cursor: pointer;
-            border-radius: 10px;
-            padding: 5px;
-            background: rgba(255, 255, 255, 0.1);
         }
 
         .social-icons .icon img {
@@ -311,55 +241,54 @@
             height: 100%;
             object-fit: contain;
             transition: transform 0.3s ease;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
 
-        .social-icons .icon:hover img,
-        .social-icons .icon:active img {
-            transform: scale(1.15);
+        .social-icons .icon:hover img {
+            transform: scale(1.1);
         }
 
-        .social-icons .icon:hover,
-        .social-icons .icon:active {
-            transform: translateY(-3px);
-            background: rgba(255, 255, 255, 0.2);
+        .social-icons .icon:hover {
+            transform: translateY(-5px);
         }
 
         .social-icons .icon .social-name {
             position: absolute;
-            top: -35px;
+            top: -30px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.9);
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 0.8rem;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 1rem;
             color: white;
             opacity: 0;
             transition: opacity 0.3s ease;
             pointer-events: none;
             white-space: nowrap;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .social-icons .icon:hover .social-name,
-        .social-icons .icon:active .social-name {
+        .social-icons .icon:hover .social-name {
             opacity: 1;
+            animation: fadeIn 0.5s ease;
         }
 
-        /* Анимации для снежинок */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
         .snowflake {
-            position: fixed;
+            position: absolute;
             top: -10%;
             color: #fff;
             font-size: 1rem;
-            animation: fall linear infinite, wobble ease-in-out infinite;
+            animation: fall linear infinite;
             pointer-events: none;
             user-select: none;
-            z-index: 1;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-            will-change: transform;
         }
 
         @keyframes fall {
@@ -370,211 +299,46 @@
                 transform: translateY(110vh) rotate(360deg);
             }
         }
-
-        @keyframes wobble {
-            0%, 100% {
-                transform: translateX(0);
-            }
-            50% {
-                transform: translateX(calc(var(--wobble-intensity, 10px) * 2));
-            }
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        /* Аудио контроль */
+        
         .audio-control {
             position: fixed;
             bottom: 20px;
             right: 20px;
             z-index: 10;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.5rem;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease;
-            touch-action: manipulation;
-            box-shadow: 0 0 20px rgba(41, 196, 255, 0.4);
-        }
-
-        .audio-control:hover,
-        .audio-control:active {
-            background: rgba(0, 0, 0, 0.9);
-            transform: scale(1.1);
-            box-shadow: 0 0 30px rgba(41, 196, 255, 0.6);
-        }
-
-        /* Частицы, реагирующие на движение */
-        .particle {
-            position: fixed;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 2;
-            opacity: 0;
-            transition: opacity 0.3s;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-        }
-
-        .particle.active {
-            opacity: 1;
-        }
-
-        /* Мобильные стили */
-        @media (max-width: 768px) {
-            .profile-container {
-                min-height: auto;
-                padding: 15px;
-                background: rgba(0, 0, 0, 0.7);
-            }
-            
-            .overlay span {
-                font-size: clamp(1.2rem, 4vw, 1.8rem);
-                padding: 20px;
-            }
-            
-            .audio-control {
-                bottom: 15px;
-                right: 15px;
-                width: 45px;
-                height: 45px;
-                font-size: 1.3rem;
-            }
-            
-            .social-icons {
-                gap: 12px;
-            }
-            
-            .badges-container {
-                gap: 6px;
-            }
-            
-            .uid {
-                top: -25px;
-                font-size: 0.75rem;
-                padding: 5px 10px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .profile-container {
-                padding: 12px;
-                background: rgba(0, 0, 0, 0.75);
-            }
-            
-            .username {
-                margin-top: 5px;
-            }
-            
-            .profile-description {
-                margin: 10px auto;
-                min-height: 50px;
-            }
-            
-            .audio-control {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
-            }
-            
-            .uid {
-                font-size: 0.7rem;
-                padding: 4px 8px;
-                top: -22px;
-            }
-            
-            .background-video {
-                object-position: center;
-            }
-        }
-
-        /* Портретный режим */
-        @media (orientation: portrait) {
-            .content {
-                max-width: 95vw;
-            }
-        }
-
-        /* Ландшафтный режим */
-        @media (orientation: landscape) and (max-height: 600px) {
-            .profile-container {
-                min-height: auto;
-                padding: 10px;
-            }
-            
-            .avatar-container {
-                width: 80px;
-                height: 80px;
-            }
-            
-            .username {
-                font-size: 1.5rem;
-            }
-            
-            .uid {
-                top: -25px;
-                font-size: 0.7rem;
-            }
-        }
-
-        /* Анимация появления */
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .content.show {
-            display: block;
-            animation: slideUp 0.6s ease-out;
         }
     </style>
 </head>
 <body>
-    <!-- Видео фон - ВКЛЮЧЕНО -->
-    <video autoplay muted loop playsinline class="background-video" id="bg-video">
+    <video autoplay muted loop class="background-video" id="bg-video">
         <source src="background.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео тег.
     </video>
     <img src="fallback.jpg" alt="Fallback Background" class="fallback-image" id="fallback-image">
 
-    <audio id="background-music" loop preload="metadata">
+    <audio id="background-music" loop>
         <source src="song.mp3" type="audio/mp3">
     </audio>
     
-    <button class="audio-control" id="audio-toggle" aria-label="Toggle audio">🔊</button>
+    <button class="audio-control" id="audio-toggle">🔊</button>
 
     <div class="overlay" id="overlay">
-        <span>Hey! Tap To Enter</span>
+        <span>[Hey! Click To Enter]</span>
     </div>
 
     <div class="content" id="content">
         <div class="profile-container" id="profile-container">
             <div class="avatar-container">
-                <img src="avatar.gif" alt="Avatar" class="avatar" loading="lazy">
+                <img src="avatar.gif" alt="Avatar" class="avatar">
             </div>
 
             <div class="username">
@@ -584,7 +348,7 @@
 
             <div class="badges-container">
                 <div class="badge" title="Owner">
-                    <img src="Crown.png" alt="Owner badge" loading="lazy">
+                    <img src="Crown.png" alt="">
                     <div class="badge-name">Owner</div>
                 </div>
             </div>
@@ -597,402 +361,156 @@
 
             <div class="social-icons">
                 <div class="icon">
-                    <img src="Angle_Wing_Right.png" alt="Decorative wing" loading="lazy">
+                    <img src="Angle_Wing_Right.png" alt="">
                 </div>
-                <div class="icon" onclick="window.open('https://steamcommunity.com/id/korsaki/');" role="button" tabindex="0">
-                    <img src="steam.gif" alt="Steam" loading="lazy">
+                <div class="icon" onclick="window.open('https://steamcommunity.com/id/korsaki/');">
+                    <img src="steam.gif" alt="">
                     <div class="social-name">Steam</div>
+
                 </div>
-                <div class="icon" onclick="window.open('https://discordapp.com/users/1278440640526680087');" role="button" tabindex="0">
-                    <img src="discord.gif" alt="Discord" loading="lazy">
+                <div class="icon" onclick="window.open('https://discordapp.com/users/1278440640526680087');">
+                    <img src="discord.gif" alt="">
                     <div class="social-name">Discord</div>
+
                 </div>
-                <div class="icon" onclick="window.open('https://t.me/votmcc');" role="button" tabindex="0">
-                    <img src="telegram.gif" alt="Telegram" loading="lazy">
+                <div class="icon" onclick="window.open('https://t.me/votmcc');">
+                    <img src="telegram.gif" alt="">
                     <div class="social-name">Telegram</div>
+
                 </div>
                 <div class="icon">
-                    <img src="Angle_Wing_Left.png" alt="Decorative wing" loading="lazy">
+                    <img src="Angle_Wing_Left.png" alt="">
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Оптимизация для мобильных устройств
-        document.addEventListener('DOMContentLoaded', function() {
-            // Обнаружение touch устройств
-            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.innerHTML = '❄';
+            snowflake.style.left = `${Math.random() * 100}vw`;
+            snowflake.style.animationDuration = `${Math.random() * 5 + 5}s`;
+            snowflake.style.opacity = Math.random();
+            snowflake.style.fontSize = `${Math.random() * 30 + 10}px`;
+            document.body.appendChild(snowflake);
+
+            setTimeout(() => {
+                snowflake.remove();
+            }, 10000);
+        }
+
+        setInterval(createSnowflake, 300);
+    </script>
+
+    <script>
+        // Проверяем, загрузилось ли видео
+        const videoElement = document.getElementById('bg-video');
+        const fallbackImage = document.getElementById('fallback-image');
+        
+        videoElement.addEventListener('error', function() {
+            console.log('Video failed to load, showing fallback image');
+            fallbackImage.style.display = 'block';
+        });
+        
+        videoElement.addEventListener('loadeddata', function() {
+            console.log('Video loaded successfully');
+            fallbackImage.style.display = 'none';
+        });
+
+        // Обработка клика по оверлею
+        document.querySelector('#overlay').addEventListener('click', function() {
+            this.classList.add('hidden');
+            document.querySelector('#content').style.display = 'block';
             
-            if (isTouchDevice) {
-                document.body.style.cursor = 'default';
-                document.querySelectorAll('.icon').forEach(icon => {
-                    icon.style.cursor = 'pointer';
+            // Попытка воспроизведения музыки с обработкой ошибок
+            const music = document.querySelector('#background-music');
+            const playPromise = music.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Autoplay prevented: ", error);
+                    document.getElementById('audio-toggle').style.display = 'flex';
                 });
-            }
-
-            // Предотвращение масштабирования при двойном тапе
-            let lastTouchEnd = 0;
-            document.addEventListener('touchend', function(event) {
-                const now = Date.now();
-                if (now - lastTouchEnd <= 300) {
-                    event.preventDefault();
-                }
-                lastTouchEnd = now;
-            }, false);
-
-            // Улучшенный клик по оверлею для мобильных
-            const overlay = document.getElementById('overlay');
-            const content = document.getElementById('content');
-            
-            overlay.addEventListener('click', enterSite);
-            overlay.addEventListener('touchend', enterSite);
-            
-            // Поддержка клавиатуры для доступности
-            overlay.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    enterSite();
-                }
-            });
-            
-            // Фокусировка для доступности
-            overlay.tabIndex = 0;
-            
-            function enterSite() {
-                overlay.classList.add('hidden');
-                content.classList.add('show');
-                
-                // Воспроизведение музыки с обработкой ошибок
-                const music = document.getElementById('background-music');
-                const playPromise = music.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.log("Autoplay prevented: ", error);
-                        document.getElementById('audio-toggle').style.display = 'flex';
-                    });
-                }
-                
-                // Запуск анимаций после входа
-                setTimeout(startAnimations, 100);
             }
         });
 
-        // Проверка загрузки видео
-        function setupVideo() {
-            const videoElement = document.getElementById('bg-video');
-            const fallbackImage = document.getElementById('fallback-image');
-            
-            videoElement.addEventListener('error', function() {
-                console.log('Video failed to load, showing fallback image');
-                fallbackImage.style.display = 'block';
-            });
-            
-            videoElement.addEventListener('loadeddata', function() {
-                console.log('Video loaded successfully');
-                fallbackImage.style.display = 'none';
-            });
-            
-            // Для мобильных - предзагрузка
-            if ('ontouchstart' in window) {
-                videoElement.preload = 'auto';
-                videoElement.load();
-            }
-        }
-
-        // Частицы, реагирующие на движение мыши/тач
-        class ParticleSystem {
-            constructor() {
-                this.particles = [];
-                this.maxParticles = 50;
-                this.isTouchDevice = 'ontouchstart' in window;
-                this.init();
-            }
-
-            init() {
-                // Создаем частицы заранее для производительности
-                for (let i = 0; i < this.maxParticles; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.left = '0px';
-                    particle.style.top = '0px';
-                    document.body.appendChild(particle);
-                    this.particles.push(particle);
-                }
-
-                if (this.isTouchDevice) {
-                    // Для touch устройств
-                    document.addEventListener('touchmove', (e) => this.handleTouch(e));
-                    document.addEventListener('touchend', () => this.hideAllParticles());
-                } else {
-                    // Для мыши
-                    document.addEventListener('mousemove', (e) => this.handleMouse(e));
-                    document.addEventListener('mouseleave', () => this.hideAllParticles());
-                }
-            }
-
-            handleMouse(e) {
-                this.updateParticles(e.clientX, e.clientY);
-            }
-
-            handleTouch(e) {
-                if (e.touches.length > 0) {
-                    const touch = e.touches[0];
-                    this.updateParticles(touch.clientX, touch.clientY);
-                }
-            }
-
-            updateParticles(x, y) {
-                // Активируем несколько частиц для плавного эффекта
-                const activeCount = 5;
-                
-                for (let i = 0; i < activeCount; i++) {
-                    const particle = this.particles[Math.floor(Math.random() * this.particles.length)];
-                    
-                    // Случайное смещение от курсора
-                    const offsetX = (Math.random() - 0.5) * 50;
-                    const offsetY = (Math.random() - 0.5) * 50;
-                    
-                    particle.style.left = (x + offsetX) + 'px';
-                    particle.style.top = (y + offsetY) + 'px';
-                    
-                    // Разный размер и цвет
-                    const size = Math.random() * 6 + 2;
-                    particle.style.width = size + 'px';
-                    particle.style.height = size + 'px';
-                    
-                    // Белые/голубые частицы для контраста с видео
-                    const hue = Math.random() * 40 + 180; // 180-220 голубые оттенки
-                    particle.style.background = `hsla(${hue}, 100%, 80%, 0.9)`;
-                    particle.style.boxShadow = `0 0 ${size * 2}px hsla(${hue}, 100%, 80%, 0.7)`;
-                    
-                    particle.classList.add('active');
-                    
-                    // Автоматическое скрытие
-                    setTimeout(() => {
-                        particle.classList.remove('active');
-                    }, 300);
-                }
-            }
-
-            hideAllParticles() {
-                this.particles.forEach(particle => {
-                    particle.classList.remove('active');
-                });
-            }
-        }
-
-        // Улучшенные снежинки с разными типами анимаций
-        class SnowflakeSystem {
-            constructor() {
-                this.snowflakes = [];
-                this.maxSnowflakes = 30;
-                this.types = ['❄', '✦', '❅', '*', '·'];
-                this.snowflakeContainer = null;
-                this.init();
-            }
-
-            init() {
-                // Создаем контейнер для снежинок
-                this.snowflakeContainer = document.createElement('div');
-                this.snowflakeContainer.id = 'snowflake-container';
-                this.snowflakeContainer.style.position = 'fixed';
-                this.snowflakeContainer.style.top = '0';
-                this.snowflakeContainer.style.left = '0';
-                this.snowflakeContainer.style.width = '100%';
-                this.snowflakeContainer.style.height = '100%';
-                this.snowflakeContainer.style.pointerEvents = 'none';
-                this.snowflakeContainer.style.zIndex = '1';
-                document.body.appendChild(this.snowflakeContainer);
-
-                // Создаем снежинки
-                for (let i = 0; i < this.maxSnowflakes; i++) {
-                    this.createSnowflake(i);
-                }
-            }
-
-            createSnowflake(index) {
-                const snowflake = document.createElement('div');
-                snowflake.className = 'snowflake';
-                
-                // Случайный символ
-                const symbol = this.types[Math.floor(Math.random() * this.types.length)];
-                snowflake.innerHTML = symbol;
-                
-                // Случайные начальные позиции
-                snowflake.style.left = `${Math.random() * 100}vw`;
-                
-                // Разная скорость падения
-                const duration = Math.random() * 10 + 10;
-                snowflake.style.animationDuration = `${duration}s`;
-                
-                // Разный размер
-                const size = Math.random() * 20 + 10;
-                snowflake.style.fontSize = `${size}px`;
-                
-                // Разная прозрачность
-                snowflake.style.opacity = Math.random() * 0.7 + 0.3;
-                
-                // Разная интенсивность колебаний
-                snowflake.style.setProperty('--wobble-intensity', `${Math.random() * 20}px`);
-                
-                // Дополнительная анимация для некоторых снежинок
-                if (Math.random() > 0.7) {
-                    snowflake.style.animation += `, float ${Math.random() * 3 + 2}s ease-in-out infinite`;
-                }
-                
-                // Белые/голубые снежинки для контраста с видео
-                const hue = Math.random() > 0.8 ? 200 : 0;
-                const saturation = Math.random() > 0.8 ? 100 : 0;
-                const lightness = 85 + Math.random() * 15;
-                snowflake.style.color = `hsla(${hue}, ${saturation}%, ${lightness}%, ${snowflake.style.opacity})`;
-                
-                this.snowflakeContainer.appendChild(snowflake);
-                this.snowflakes.push(snowflake);
-                
-                // Пересоздание снежинки после падения
-                setTimeout(() => {
-                    if (snowflake.parentNode) {
-                        snowflake.remove();
-                    }
-                    this.createSnowflake(index);
-                }, duration * 1000);
-            }
-        }
-
         // Управление аудио
-        function setupAudioControl() {
-            const audioToggle = document.getElementById('audio-toggle');
-            const music = document.getElementById('background-music');
-            
-            audioToggle.addEventListener('click', toggleAudio);
-            audioToggle.addEventListener('touchend', toggleAudio);
-            
-            function toggleAudio(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                if (music.paused) {
-                    const playPromise = music.play();
-                    if (playPromise !== undefined) {
-                        playPromise.catch(error => {
-                            console.log("Playback failed: ", error);
-                        });
-                    }
-                    audioToggle.textContent = '🔊';
-                    audioToggle.setAttribute('aria-label', 'Mute audio');
-                } else {
-                    music.pause();
-                    audioToggle.textContent = '🔈';
-                    audioToggle.setAttribute('aria-label', 'Unmute audio');
-                }
+        const audioToggle = document.getElementById('audio-toggle');
+        const music = document.getElementById('background-music');
+        
+        audioToggle.addEventListener('click', function() {
+            if (music.paused) {
+                music.play();
+                this.textContent = '🔊';
+            } else {
+                music.pause();
+                this.textContent = '🔈';
             }
-            
-            // Автоматическое отображение кнопки, если автовоспроизведение заблокировано
-            music.addEventListener('play', () => {
-                audioToggle.style.display = 'flex';
-            });
-        }
+        });
 
         // Типизируемый текст
-        function setupTypingText() {
-            const phrases = [
-                "Always come back",
-                "A journey of hundreds of miles begins with a single step.",
-            ];
-            const typingTextElement = document.getElementById('typing-text');
-            let currentPhraseIndex = 0;
-            let currentCharIndex = 0;
-            let isDeleting = false;
-            let typingSpeed = 100;
-            let deletingSpeed = 50;
+        const phrases = [
+            "Always come back",
+            "A journey of hundreds of miles begins with a single step.",
 
-            function type() {
-                const currentPhrase = phrases[currentPhraseIndex];
-                const delay = isDeleting ? deletingSpeed : typingSpeed;
+        ];
+        const typingTextElement = document.getElementById('typing-text');
+        let currentPhraseIndex = 0;
+        let currentCharIndex = 0;
+        let isDeleting = false;
 
-                if (!isDeleting && currentCharIndex < currentPhrase.length) {
-                    typingTextElement.textContent += currentPhrase[currentCharIndex];
-                    currentCharIndex++;
-                } else if (isDeleting && currentCharIndex > 0) {
-                    typingTextElement.textContent = currentPhrase.slice(0, currentCharIndex - 1);
-                    currentCharIndex--;
-                } else if (!isDeleting && currentCharIndex === currentPhrase.length) {
-                    isDeleting = true;
-                    setTimeout(type, 1000);
-                    return;
-                } else if (isDeleting && currentCharIndex === 0) {
-                    isDeleting = false;
-                    currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
-                    // Случайная скорость для разнообразия
-                    typingSpeed = Math.random() * 50 + 80;
-                    deletingSpeed = Math.random() * 30 + 40;
-                }
+        function type() {
+            const currentPhrase = phrases[currentPhraseIndex];
+            const delay = isDeleting ? 50 : 100;
 
-                setTimeout(type, delay);
+            if (!isDeleting && currentCharIndex < currentPhrase.length) {
+                typingTextElement.textContent += currentPhrase[currentCharIndex];
+                currentCharIndex++;
+            } else if (isDeleting && currentCharIndex > 0) {
+                typingTextElement.textContent = currentPhrase.slice(0, currentCharIndex - 1);
+                currentCharIndex--;
+            } else if (!isDeleting && currentCharIndex === currentPhrase.length) {
+                isDeleting = true;
+                setTimeout(type, 1000);
+                return;
+            } else if (isDeleting && currentCharIndex === 0) {
+                isDeleting = false;
+                currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
             }
 
-            // Запуск с задержкой
-            setTimeout(type, 1000);
+            setTimeout(type, delay);
         }
 
-        // 3D эффект для профиля (только для десктопов)
-        function setup3DEffect() {
-            const profileContainer = document.getElementById('profile-container');
-            const isTouchDevice = 'ontouchstart' in window;
-            
-            if (!isTouchDevice) {
-                profileContainer.addEventListener('mousemove', function (e) {
-                    const rect = profileContainer.getBoundingClientRect();
-                    const sensitivity = 15;
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
+        setTimeout(type, 500);
 
-                    const rotateX = ((y / rect.height) - 0.5) * sensitivity;
-                    const rotateY = ((x / rect.width) - 0.5) * -sensitivity;
+        // 3D эффект для профиля
+        const profileContainer = document.getElementById('profile-container');
+        let rotateY = 0;
+        let rotateX = 0;
 
-                    this.style.transform = `
-                        perspective(1000px)
-                        rotateX(${rotateX}deg)
-                        rotateY(${rotateY}deg)
-                        scale3d(1.02, 1.02, 1.02)
-                    `;
-                });
+        profileContainer.addEventListener('mousemove', function (e) {
+            const rect = profileContainer.getBoundingClientRect();
+            const sensitivity = 42;
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
 
-                profileContainer.addEventListener('mouseleave', function () {
-                    this.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-                });
-            }
-        }
+            rotateX = ((y / rect.height) - 0.5) * sensitivity;
+            rotateY = ((x / rect.width) - 0.5) * -sensitivity;
 
-        // Запуск всех анимаций после загрузки
-        function startAnimations() {
-            // Настройка видео
-            setupVideo();
-            
-            // Запуск систем анимаций
-            window.particleSystem = new ParticleSystem();
-            window.snowflakeSystem = new SnowflakeSystem();
-            
-            // Настройка остальных функций
-            setupAudioControl();
-            setupTypingText();
-            setup3DEffect();
-            
-            // Добавляем класс для анимации появления
-            document.getElementById('content').classList.add('show');
-        }
+            profileContainer.style.setProperty('--xv', `${rotateX}deg`);
+            profileContainer.style.setProperty('--yv', `${rotateY}deg`);
+        });
 
-        // Инициализация при загрузке страницы
-        document.addEventListener('DOMContentLoaded', function() {
-            // Устанавливаем минимальную высоту для мобильных
-            document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-            
-            // Обновляем высоту при изменении размера окна
-            window.addEventListener('resize', () => {
-                document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-            });
+        profileContainer.addEventListener('mouseleave', function () {
+            setTimeout(() => {
+                profileContainer.style.setProperty('--xv', `0deg`);
+                profileContainer.style.setProperty('--yv', `0deg`);
+            }, 150);
         });
     </script>
 </body>
 </html>
+
+
