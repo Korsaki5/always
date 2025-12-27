@@ -31,7 +31,7 @@
             overflow: hidden;
             position: relative;
             cursor: url('Cursor.cur'), auto;
-            background-color: #000; /* Запасной цвет если видео не загрузится */
+            background-color: #000;
         }
 
         @supports (-webkit-touch-callout: none) {
@@ -122,23 +122,24 @@
             padding: 15px;
         }
 
+        /* Прозрачная рамка с эффектом стекла */
         .profile-container {
             text-align: center;
             color: white;
             padding: clamp(20px, 5vw, 25px);
-            background: rgba(20, 20, 20, 0.85);
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 25px;
             width: 100%;
             box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(255, 255, 255, 0.15),
-                0 0 50px rgba(41, 196, 255, 0.3);
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                0 0 50px rgba(41, 196, 255, 0.15);
             position: relative;
             margin: 0 auto;
             z-index: 4;
             min-height: min(85vh, 500px);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             transform-style: preserve-3d;
             transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
@@ -152,10 +153,10 @@
             overflow: hidden;
             margin: 0 auto 15px;
             animation: spinAvatar 15s linear infinite;
-            border: 3px solid rgba(255, 255, 255, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.25);
             box-shadow: 
-                0 0 30px rgba(255, 255, 255, 0.2),
-                0 0 60px rgba(41, 196, 255, 0.4);
+                0 0 30px rgba(255, 255, 255, 0.15),
+                0 0 60px rgba(41, 196, 255, 0.2);
         }
 
         @keyframes spinAvatar {
@@ -192,7 +193,7 @@
             top: -30px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.9);
+            background-color: rgba(0, 0, 0, 0.7);
             padding: 8px 16px;
             border-radius: 10px;
             font-size: 0.9rem;
@@ -202,9 +203,9 @@
             white-space: nowrap;
             pointer-events: none;
             z-index: 10;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             min-width: 100px;
             text-align: center;
         }
@@ -230,7 +231,7 @@
             height: clamp(40px, 10vw, 50px);
             border-radius: 12px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.1);
             padding: 5px;
             cursor: pointer;
         }
@@ -247,7 +248,7 @@
             top: -40px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.95);
+            background-color: rgba(0, 0, 0, 0.7);
             padding: 8px 12px;
             border-radius: 10px;
             font-size: 0.85rem;
@@ -256,8 +257,8 @@
             transition: all 0.3s ease;
             pointer-events: none;
             white-space: nowrap;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             z-index: 20;
         }
 
@@ -269,8 +270,8 @@
         .badge:hover,
         .badge:active {
             transform: translateY(-8px) scale(1.15);
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
         .profile-description {
@@ -286,12 +287,12 @@
 
         .line {
             width: 85%;
-            height: 3px;
+            height: 2px;
             background: linear-gradient(90deg, 
                 transparent, 
-                rgba(255, 255, 255, 0.4), 
-                rgba(255, 255, 255, 0.8),
-                rgba(255, 255, 255, 0.4),
+                rgba(255, 255, 255, 0.3), 
+                rgba(255, 255, 255, 0.6),
+                rgba(255, 255, 255, 0.3),
                 transparent);
             margin: 20px auto;
             border-radius: 3px;
@@ -317,7 +318,7 @@
             cursor: pointer;
             border-radius: 12px;
             padding: 6px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -331,20 +332,20 @@
             height: 100%;
             object-fit: contain;
             transition: all 0.3s ease;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
 
         .social-icons .icon:hover img,
         .social-icons .icon:active img {
             transform: scale(1.2);
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
         }
 
         .social-icons .icon:hover,
         .social-icons .icon:active {
             transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
         .social-icons .icon .social-name {
@@ -352,7 +353,7 @@
             top: -40px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.95);
+            background-color: rgba(0, 0, 0, 0.7);
             padding: 6px 10px;
             border-radius: 8px;
             font-size: 0.75rem;
@@ -361,8 +362,8 @@
             transition: all 0.3s ease;
             pointer-events: none;
             white-space: nowrap;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             z-index: 20;
         }
 
@@ -378,7 +379,7 @@
             bottom: 25px;
             right: 25px;
             z-index: 100;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.6);
             color: white;
             border: none;
             border-radius: 50%;
@@ -389,18 +390,18 @@
             justify-content: center;
             align-items: center;
             font-size: 1.5rem;
-            backdrop-filter: blur(15px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             transition: all 0.3s ease;
             touch-action: manipulation;
-            box-shadow: 0 10px 30px rgba(41, 196, 255, 0.4);
+            box-shadow: 0 10px 30px rgba(41, 196, 255, 0.3);
         }
 
         .audio-control:hover,
         .audio-control:active {
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.8);
             transform: scale(1.15) rotate(15deg);
-            box-shadow: 0 15px 40px rgba(41, 196, 255, 0.6);
+            box-shadow: 0 15px 40px rgba(41, 196, 255, 0.4);
         }
 
         /* Мобильная адаптация */
@@ -408,7 +409,8 @@
             .profile-container {
                 padding: 18px;
                 margin: 10px;
-                background: rgba(20, 20, 20, 0.9);
+                background: rgba(255, 255, 255, 0.07);
+                backdrop-filter: blur(20px);
             }
             
             .overlay span {
@@ -437,6 +439,7 @@
             .profile-container {
                 padding: 15px;
                 border-radius: 20px;
+                backdrop-filter: blur(15px);
             }
             
             .avatar-container {
@@ -508,6 +511,7 @@
             .profile-container {
                 padding: 15px;
                 min-height: auto;
+                backdrop-filter: blur(20px);
             }
             
             .avatar-container {
