@@ -296,14 +296,22 @@
             border-radius: 3px;
         }
 
+        /* Исправленные социальные иконки - все в одной строке */
         .social-icons {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: clamp(15px, 4vw, 25px);
+            gap: clamp(10px, 3vw, 18px);
             margin-top: 20px;
-            flex-wrap: wrap;
             padding: 0 10px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .social-icons::-webkit-scrollbar {
+            display: none;
         }
 
         .social-icons .icon {
@@ -319,8 +327,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 44px;
-            min-height: 44px;
+            min-width: 50px;
+            min-height: 50px;
+            flex-shrink: 0;
         }
 
         .social-icons .icon img {
@@ -369,12 +378,13 @@
             transform: translateX(-50%) translateY(-5px);
         }
 
-        /* Дополнительные кнопки */
+        /* Дополнительные кнопки - одна строка */
         .action-buttons {
             display: flex;
             justify-content: center;
             gap: 15px;
             margin-top: 25px;
+            padding: 0 10px;
             flex-wrap: wrap;
         }
 
@@ -391,8 +401,10 @@
             backdrop-filter: blur(10px);
             text-transform: uppercase;
             letter-spacing: 1px;
-            min-width: 120px;
+            min-width: 140px;
             text-align: center;
+            flex: 1;
+            max-width: 200px;
         }
 
         .action-btn:hover {
@@ -446,23 +458,25 @@
             }
             
             .social-icons {
-                gap: 12px;
+                gap: 8px;
+                padding: 10px 5px;
             }
             
             .social-icons .icon {
-                min-width: 50px;
-                min-height: 50px;
+                min-width: 45px;
+                min-height: 45px;
+                padding: 6px;
             }
             
             .action-buttons {
-                flex-direction: column;
-                align-items: center;
+                flex-direction: row;
                 gap: 10px;
             }
             
             .action-btn {
-                width: 90%;
-                max-width: 250px;
+                min-width: 120px;
+                padding: 10px 15px;
+                font-size: 0.8rem;
             }
             
             .audio-control {
@@ -490,6 +504,7 @@
             .profile-description {
                 font-size: 1rem;
                 margin: 15px auto;
+                padding: 0 10px;
             }
             
             .uid {
@@ -498,15 +513,46 @@
                 top: -25px;
             }
             
+            .social-icons {
+                gap: 6px;
+            }
+            
             .social-icons .icon {
-                width: 42px;
-                height: 42px;
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
+                min-height: 40px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-btn {
+                width: 90%;
+                max-width: 250px;
+                margin-bottom: 5px;
             }
             
             .audio-control {
                 width: 45px;
                 height: 45px;
                 font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .social-icons {
+                gap: 4px;
+            }
+            
+            .social-icons .icon {
+                width: 38px;
+                height: 38px;
+                min-width: 38px;
+                min-height: 38px;
+                padding: 5px;
             }
         }
 
@@ -528,6 +574,12 @@
             
             .social-icons {
                 margin-top: 15px;
+                gap: 8px;
+            }
+            
+            .social-icons .icon {
+                width: 40px;
+                height: 40px;
             }
         }
 
@@ -546,6 +598,38 @@
         .content.show {
             display: block;
             animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* Анимации для снежинок */
+        .snowflake {
+            position: fixed;
+            top: -10%;
+            color: #fff;
+            font-size: 1rem;
+            animation: fall linear infinite, wobble ease-in-out infinite;
+            pointer-events: none;
+            user-select: none;
+            z-index: 1;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            will-change: transform;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+
+        @keyframes wobble {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            50% {
+                transform: translateX(calc(var(--wobble-intensity, 10px) * 2));
+            }
         }
     </style>
 </head>
@@ -590,31 +674,34 @@
 
             <div class="line"></div>
 
+            <!-- Социальные иконки - все в одной строке -->
             <div class="social-icons">
-                <div class="icon">
-                    <img src="Angle_Wing_Right.png" alt="Decorative wing" loading="lazy">
+                <div class="icon" title="Decor">
+                    <img src="Angle_Wing_Right.png" alt="Decor" loading="lazy">
+                    <div class="social-name">Decor</div>
                 </div>
-                <div class="icon" onclick="window.open('https://steamcommunity.com/id/korsaki/');">
+                <div class="icon" onclick="window.open('https://steamcommunity.com/id/korsaki/');" title="Steam">
                     <img src="steam.gif" alt="Steam" loading="lazy">
                     <div class="social-name">Steam</div>
                 </div>
-                <div class="icon" onclick="window.open('https://discordapp.com/users/1278440640526680087');">
+                <div class="icon" onclick="window.open('https://discordapp.com/users/1278440640526680087');" title="Discord">
                     <img src="discord.gif" alt="Discord" loading="lazy">
                     <div class="social-name">Discord</div>
                 </div>
-                <div class="icon" onclick="window.open('https://t.me/votmcc');">
+                <div class="icon" onclick="window.open('https://t.me/votmcc');" title="Telegram">
                     <img src="telegram.gif" alt="Telegram" loading="lazy">
                     <div class="social-name">Telegram</div>
                 </div>
-                <div class="icon">
-                    <img src="Angle_Wing_Left.png" alt="Decorative wing" loading="lazy">
+                <div class="icon" title="Decor">
+                    <img src="Angle_Wing_Left.png" alt="Decor" loading="lazy">
+                    <div class="social-name">Decor</div>
                 </div>
             </div>
 
-            <!-- Дополнительные кнопки -->
+            <!-- Дополнительные кнопки с полезными функциями -->
             <div class="action-buttons">
-                <button class="action-btn" onclick="copyUID()">Copy UID</button>
-                <button class="action-btn" onclick="toggleTheme()">Theme</button>
+                <button class="action-btn" onclick="toggleBlurEffect()">Blur Effect</button>
+                <button class="action-btn" onclick="toggleSnow()">Snow Effect</button>
             </div>
         </div>
     </div>
@@ -756,33 +843,102 @@
             });
         }
 
-        // Функции для кнопок
-        function copyUID() {
-            navigator.clipboard.writeText('UID: 0').then(() => {
-                const originalText = event.target.textContent;
-                event.target.textContent = 'Copied!';
-                event.target.style.background = 'linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(255, 255, 255, 0.1))';
-                
-                setTimeout(() => {
-                    event.target.textContent = originalText;
-                    event.target.style.background = 'linear-gradient(135deg, rgba(41, 196, 255, 0.2), rgba(255, 255, 255, 0.1))';
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-            });
+        // Полезные функции для кнопок
+        let blurEnabled = true;
+        let snowEnabled = true;
+        let snowflakes = [];
+        let snowInterval = null;
+
+        function toggleBlurEffect() {
+            const profileContainer = document.querySelector('.profile-container');
+            blurEnabled = !blurEnabled;
+            
+            if (blurEnabled) {
+                profileContainer.style.backdropFilter = 'blur(20px)';
+                event.target.textContent = 'Blur On';
+                event.target.style.background = 'linear-gradient(135deg, rgba(41, 196, 255, 0.3), rgba(255, 255, 255, 0.2))';
+            } else {
+                profileContainer.style.backdropFilter = 'none';
+                event.target.textContent = 'Blur Off';
+                event.target.style.background = 'linear-gradient(135deg, rgba(255, 100, 100, 0.3), rgba(255, 255, 255, 0.2))';
+            }
         }
 
-        function toggleTheme() {
-            const body = document.body;
-            const currentBrightness = body.style.filter || 'brightness(1)';
+        function toggleSnow() {
+            snowEnabled = !snowEnabled;
             
-            if (currentBrightness === 'brightness(1)') {
-                body.style.filter = 'brightness(0.7) sepia(0.3)';
-                event.target.textContent = 'Light';
+            if (snowEnabled) {
+                startSnowflakes();
+                event.target.textContent = 'Snow On';
+                event.target.style.background = 'linear-gradient(135deg, rgba(41, 196, 255, 0.3), rgba(255, 255, 255, 0.2))';
             } else {
-                body.style.filter = 'brightness(1)';
-                event.target.textContent = 'Dark';
+                stopSnowflakes();
+                event.target.textContent = 'Snow Off';
+                event.target.style.background = 'linear-gradient(135deg, rgba(255, 100, 100, 0.3), rgba(255, 255, 255, 0.2))';
             }
+        }
+
+        // Функция для создания снежинок
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.className = 'snowflake';
+            
+            // Разные символы снежинок
+            const symbols = ['❄', '✦', '❅', '*', '·'];
+            const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+            snowflake.innerHTML = symbol;
+            
+            snowflake.style.left = `${Math.random() * 100}vw`;
+            
+            // Разная скорость
+            const duration = Math.random() * 10 + 10;
+            snowflake.style.animationDuration = `${duration}s`;
+            
+            // Разный размер
+            snowflake.style.fontSize = `${Math.random() * 20 + 10}px`;
+            
+            // Разная прозрачность
+            snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+            
+            // Разная интенсивность колебаний
+            snowflake.style.setProperty('--wobble-intensity', `${Math.random() * 20}px`);
+            
+            // Разные цвета
+            const hue = Math.random() > 0.8 ? 200 : 0;
+            snowflake.style.color = `hsla(${hue}, ${Math.random() * 100}%, 85%, ${snowflake.style.opacity})`;
+            
+            document.body.appendChild(snowflake);
+            snowflakes.push(snowflake);
+
+            // Удаляем через время
+            setTimeout(() => {
+                if (snowflake.parentNode) {
+                    snowflake.remove();
+                    const index = snowflakes.indexOf(snowflake);
+                    if (index > -1) {
+                        snowflakes.splice(index, 1);
+                    }
+                }
+            }, duration * 1000);
+        }
+
+        function startSnowflakes() {
+            if (snowInterval) clearInterval(snowInterval);
+            snowInterval = setInterval(createSnowflake, 300);
+        }
+
+        function stopSnowflakes() {
+            if (snowInterval) {
+                clearInterval(snowInterval);
+                snowInterval = null;
+            }
+            // Удаляем все существующие снежинки
+            snowflakes.forEach(snowflake => {
+                if (snowflake.parentNode) {
+                    snowflake.remove();
+                }
+            });
+            snowflakes = [];
         }
 
         // Touch оптимизация для мобильных
@@ -819,6 +975,9 @@
         function startAnimations() {
             // Запускаем печать текста
             setTimeout(type, 500);
+            
+            // Запускаем снежинки
+            startSnowflakes();
             
             // Автоматическое отображение кнопки аудио
             music.addEventListener('play', () => {
