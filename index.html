@@ -137,7 +137,7 @@
             text-transform: capitalize;
             font-weight: 600;
             position: relative;
-            display: block;
+            display: inline-block;
         }
 
         .uid {
@@ -153,11 +153,11 @@
             opacity: 0;
             transition: opacity 0.3s ease;
             white-space: nowrap;
+            pointer-events: none;
         }
 
         .username:hover .uid {
             opacity: 1;
-            animation: fadeIn 0.5s ease;
         }
 
         .badges-container {
@@ -201,7 +201,6 @@
 
         .badge:hover .badge-name {
             opacity: 1;
-            animation: fadeIn 0.5s ease;
         }
 
         .badge:hover {
@@ -211,6 +210,7 @@
         .profile-description {
             margin-top: 20px;
             font-size: 1.2rem;
+            min-height: 60px;
         }
 
         .line {
@@ -269,16 +269,6 @@
 
         .social-icons .icon:hover .social-name {
             opacity: 1;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
         }
 
         .snowflake {
@@ -289,6 +279,7 @@
             animation: fall linear infinite;
             pointer-events: none;
             user-select: none;
+            z-index: 1;
         }
 
         @keyframes fall {
@@ -315,6 +306,84 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        /* Частицы, реагирующие на движение */
+        .particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .particle.active {
+            opacity: 1;
+        }
+
+        /* Мобильная адаптация */
+        @media (max-width: 768px) {
+            .overlay {
+                font-size: 2rem;
+            }
+            
+            .profile-container {
+                max-width: 90%;
+                padding: 15px;
+            }
+            
+            .avatar-container {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .username {
+                font-size: 2rem;
+            }
+            
+            .social-icons {
+                gap: 15px;
+            }
+            
+            .social-icons .icon {
+                width: 35px;
+                height: 35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .overlay {
+                font-size: 1.5rem;
+            }
+            
+            .profile-container {
+                padding: 12px;
+            }
+            
+            .avatar-container {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .username {
+                font-size: 1.8rem;
+                margin-top: 15px;
+            }
+            
+            .profile-description {
+                font-size: 1rem;
+                margin-top: 15px;
+            }
+            
+            .uid {
+                font-size: 0.9rem;
+                top: -22px;
+            }
         }
     </style>
 </head>
@@ -366,17 +435,14 @@
                 <div class="icon" onclick="window.open('https://steamcommunity.com/id/korsaki/');">
                     <img src="steam.gif" alt="">
                     <div class="social-name">Steam</div>
-
                 </div>
                 <div class="icon" onclick="window.open('https://discordapp.com/users/1278440640526680087');">
                     <img src="discord.gif" alt="">
                     <div class="social-name">Discord</div>
-
                 </div>
                 <div class="icon" onclick="window.open('https://t.me/votmcc');">
                     <img src="telegram.gif" alt="">
                     <div class="social-name">Telegram</div>
-
                 </div>
                 <div class="icon">
                     <img src="Angle_Wing_Left.png" alt="">
@@ -384,25 +450,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        function createSnowflake() {
-            const snowflake = document.createElement('div');
-            snowflake.classList.add('snowflake');
-            snowflake.innerHTML = '❄';
-            snowflake.style.left = `${Math.random() * 100}vw`;
-            snowflake.style.animationDuration = `${Math.random() * 5 + 5}s`;
-            snowflake.style.opacity = Math.random();
-            snowflake.style.fontSize = `${Math.random() * 30 + 10}px`;
-            document.body.appendChild(snowflake);
-
-            setTimeout(() => {
-                snowflake.remove();
-            }, 10000);
-        }
-
-        setInterval(createSnowflake, 300);
-    </script>
 
     <script>
         // Проверяем, загрузилось ли видео
@@ -434,6 +481,9 @@
                     document.getElementById('audio-toggle').style.display = 'flex';
                 });
             }
+            
+            // Запускаем анимации после входа
+            startAnimations();
         });
 
         // Управление аудио
@@ -454,7 +504,6 @@
         const phrases = [
             "Always come back",
             "A journey of hundreds of miles begins with a single step.",
-
         ];
         const typingTextElement = document.getElementById('typing-text');
         let currentPhraseIndex = 0;
@@ -483,34 +532,173 @@
             setTimeout(type, delay);
         }
 
-        setTimeout(type, 500);
-
         // 3D эффект для профиля
         const profileContainer = document.getElementById('profile-container');
-        let rotateY = 0;
-        let rotateX = 0;
-
+        
         profileContainer.addEventListener('mousemove', function (e) {
             const rect = profileContainer.getBoundingClientRect();
-            const sensitivity = 42;
+            const sensitivity = 15;
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
 
-            rotateX = ((y / rect.height) - 0.5) * sensitivity;
-            rotateY = ((x / rect.width) - 0.5) * -sensitivity;
+            const rotateX = ((y / rect.height) - 0.5) * sensitivity;
+            const rotateY = ((x / rect.width) - 0.5) * -sensitivity;
 
-            profileContainer.style.setProperty('--xv', `${rotateX}deg`);
-            profileContainer.style.setProperty('--yv', `${rotateY}deg`);
+            profileContainer.style.transform = `
+                perspective(1000px)
+                rotateX(${rotateX}deg)
+                rotateY(${rotateY}deg)
+                scale3d(1.02, 1.02, 1.02)
+            `;
         });
 
         profileContainer.addEventListener('mouseleave', function () {
+            profileContainer.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        });
+
+        // Частицы, реагирующие на движение
+        class ParticleSystem {
+            constructor() {
+                this.particles = [];
+                this.maxParticles = 30;
+                this.init();
+            }
+
+            init() {
+                // Создаем частицы заранее
+                for (let i = 0; i < this.maxParticles; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = '0px';
+                    particle.style.top = '0px';
+                    document.body.appendChild(particle);
+                    this.particles.push(particle);
+                }
+
+                // Для мыши
+                document.addEventListener('mousemove', (e) => this.handleMouse(e));
+                document.addEventListener('mouseleave', () => this.hideAllParticles());
+                
+                // Для touch устройств
+                document.addEventListener('touchmove', (e) => this.handleTouch(e));
+                document.addEventListener('touchend', () => this.hideAllParticles());
+            }
+
+            handleMouse(e) {
+                this.updateParticles(e.clientX, e.clientY);
+            }
+
+            handleTouch(e) {
+                if (e.touches.length > 0) {
+                    const touch = e.touches[0];
+                    this.updateParticles(touch.clientX, touch.clientY);
+                }
+            }
+
+            updateParticles(x, y) {
+                const activeCount = 3;
+                
+                for (let i = 0; i < activeCount; i++) {
+                    const particle = this.particles[Math.floor(Math.random() * this.particles.length)];
+                    
+                    const offsetX = (Math.random() - 0.5) * 40;
+                    const offsetY = (Math.random() - 0.5) * 40;
+                    
+                    particle.style.left = (x + offsetX) + 'px';
+                    particle.style.top = (y + offsetY) + 'px';
+                    
+                    const size = Math.random() * 4 + 2;
+                    particle.style.width = size + 'px';
+                    particle.style.height = size + 'px';
+                    
+                    const hue = Math.random() * 40 + 180;
+                    particle.style.background = `hsla(${hue}, 100%, 70%, 0.8)`;
+                    particle.style.boxShadow = `0 0 ${size * 2}px hsla(${hue}, 100%, 70%, 0.5)`;
+                    
+                    particle.classList.add('active');
+                    
+                    setTimeout(() => {
+                        particle.classList.remove('active');
+                    }, 200);
+                }
+            }
+
+            hideAllParticles() {
+                this.particles.forEach(particle => {
+                    particle.classList.remove('active');
+                });
+            }
+        }
+
+        // Улучшенные снежинки
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            
+            // Разные символы снежинок
+            const symbols = ['❄', '✦', '❅', '*', '·'];
+            const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+            snowflake.innerHTML = symbol;
+            
+            snowflake.style.left = `${Math.random() * 100}vw`;
+            
+            // Разная скорость
+            const duration = Math.random() * 10 + 10;
+            snowflake.style.animationDuration = `${duration}s`;
+            
+            // Разный размер
+            snowflake.style.fontSize = `${Math.random() * 20 + 10}px`;
+            
+            // Разная прозрачность
+            snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+            
+            // Разные цвета
+            const hue = Math.random() > 0.8 ? 200 : 0;
+            snowflake.style.color = `hsla(${hue}, ${Math.random() * 100}%, 85%, ${snowflake.style.opacity})`;
+            
+            document.body.appendChild(snowflake);
+
+            // Удаляем через время
             setTimeout(() => {
-                profileContainer.style.setProperty('--xv', `0deg`);
-                profileContainer.style.setProperty('--yv', `0deg`);
-            }, 150);
+                if (snowflake.parentNode) {
+                    snowflake.remove();
+                }
+            }, duration * 1000);
+        }
+
+        // Снежинки с интервалом
+        function startSnowflakes() {
+            createSnowflake();
+            setInterval(createSnowflake, 300);
+        }
+
+        // Запуск всех анимаций
+        function startAnimations() {
+            // Запускаем снежинки
+            startSnowflakes();
+            
+            // Запускаем частицы
+            window.particleSystem = new ParticleSystem();
+            
+            // Запускаем печать текста
+            setTimeout(type, 500);
+        }
+
+        // Добавляем touch поддержку для мобильных
+        document.addEventListener('DOMContentLoaded', function() {
+            const isTouchDevice = 'ontouchstart' in window;
+            
+            if (isTouchDevice) {
+                // Для touch устройств делаем кнопки больше
+                document.querySelectorAll('.icon').forEach(icon => {
+                    icon.style.minWidth = '44px';
+                    icon.style.minHeight = '44px';
+                });
+                
+                // Убираем курсор для touch
+                document.body.style.cursor = 'default';
+            }
         });
     </script>
 </body>
 </html>
-
-
