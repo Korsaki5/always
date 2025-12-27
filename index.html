@@ -40,6 +40,7 @@
             }
         }
 
+        /* Видео фон - ВКЛЮЧЕНО */
         .background-video {
             position: fixed;
             top: 0;
@@ -61,6 +62,11 @@
             display: none;
         }
 
+        /* Убираем градиентный фон */
+        body::before {
+            display: none;
+        }
+
         .overlay {
             position: fixed;
             top: 0;
@@ -75,7 +81,7 @@
             text-align: center;
             z-index: 2;
             transition: opacity 0.5s ease;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(5px);
             background-color: rgba(0, 0, 0, 0.7);
             padding: 20px;
             user-select: none;
@@ -85,6 +91,19 @@
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
+        }
+
+        .overlay span {
+            background: linear-gradient(45deg, #fff, #a0a0a0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
         .content {
@@ -102,18 +121,19 @@
             text-align: center;
             color: white;
             padding: clamp(15px, 4vw, 20px);
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.6);
             border-radius: 20px;
             width: 100%;
             box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.3),
-                0 0 0 1px rgba(255, 255, 255, 0.05);
+                0 8px 32px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                0 0 30px rgba(41, 196, 255, 0.2);
             position: relative;
             margin: 10px auto;
             z-index: 4;
             min-height: min(80vh, 450px);
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             transform-style: preserve-3d;
             transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
@@ -127,8 +147,10 @@
             overflow: hidden;
             margin: 0 auto 10px;
             animation: spinAvatar 20s linear infinite;
-            border: 2px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 0 20px rgba(255, 255, 255, 0.2),
+                0 0 40px rgba(41, 196, 255, 0.3);
         }
 
         @keyframes spinAvatar {
@@ -155,27 +177,32 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            cursor: default;
         }
 
+        /* UID - скрыт по умолчанию, появляется при наведении на ник */
         .uid {
             position: absolute;
-            top: -25px;
+            top: -30px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.85);
+            background-color: rgba(0, 0, 0, 0.9);
             padding: 6px 12px;
             border-radius: 8px;
             font-size: 0.85rem;
-            color: white;
+            color: rgba(255, 255, 255, 0.9);
             opacity: 0;
             transition: opacity 0.3s ease;
             white-space: nowrap;
             backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            pointer-events: none;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
 
-        .username:hover .uid,
-        .username:active .uid {
+        .username:hover .uid {
             opacity: 1;
         }
 
@@ -195,7 +222,7 @@
             height: clamp(32px, 8vw, 40px);
             border-radius: 8px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             padding: 3px;
         }
 
@@ -221,7 +248,7 @@
             pointer-events: none;
             white-space: nowrap;
             backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .badge:hover .badge-name,
@@ -232,7 +259,7 @@
         .badge:hover,
         .badge:active {
             transform: translateY(-5px) scale(1.1);
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.25);
         }
 
         .profile-description {
@@ -242,6 +269,8 @@
             min-height: 60px;
             padding: 0 10px;
             max-width: 90%;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
 
         .line {
@@ -249,9 +278,9 @@
             height: 2px;
             background: linear-gradient(90deg, 
                 transparent, 
-                rgba(255, 255, 255, 0.3), 
-                rgba(255, 255, 255, 0.6),
-                rgba(255, 255, 255, 0.3),
+                rgba(255, 255, 255, 0.4), 
+                rgba(255, 255, 255, 0.7),
+                rgba(255, 255, 255, 0.4),
                 transparent);
             margin: 15px auto;
             border-radius: 2px;
@@ -274,7 +303,7 @@
             cursor: pointer;
             border-radius: 10px;
             padding: 5px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .social-icons .icon img {
@@ -282,7 +311,7 @@
             height: 100%;
             object-fit: contain;
             transition: transform 0.3s ease;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
 
         .social-icons .icon:hover img,
@@ -293,7 +322,7 @@
         .social-icons .icon:hover,
         .social-icons .icon:active {
             transform: translateY(-3px);
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .social-icons .icon .social-name {
@@ -311,7 +340,7 @@
             pointer-events: none;
             white-space: nowrap;
             backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .social-icons .icon:hover .social-name,
@@ -378,15 +407,17 @@
             align-items: center;
             font-size: 1.5rem;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
             touch-action: manipulation;
+            box-shadow: 0 0 20px rgba(41, 196, 255, 0.4);
         }
 
         .audio-control:hover,
         .audio-control:active {
             background: rgba(0, 0, 0, 0.9);
             transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(41, 196, 255, 0.6);
         }
 
         /* Частицы, реагирующие на движение */
@@ -394,13 +425,13 @@
             position: fixed;
             width: 4px;
             height: 4px;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 50%;
             pointer-events: none;
             z-index: 2;
             opacity: 0;
             transition: opacity 0.3s;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
         }
 
         .particle.active {
@@ -412,6 +443,7 @@
             .profile-container {
                 min-height: auto;
                 padding: 15px;
+                background: rgba(0, 0, 0, 0.7);
             }
             
             .overlay span {
@@ -434,11 +466,18 @@
             .badges-container {
                 gap: 6px;
             }
+            
+            .uid {
+                top: -25px;
+                font-size: 0.75rem;
+                padding: 5px 10px;
+            }
         }
 
         @media (max-width: 480px) {
             .profile-container {
                 padding: 12px;
+                background: rgba(0, 0, 0, 0.75);
             }
             
             .username {
@@ -454,6 +493,16 @@
                 width: 40px;
                 height: 40px;
                 font-size: 1.2rem;
+            }
+            
+            .uid {
+                font-size: 0.7rem;
+                padding: 4px 8px;
+                top: -22px;
+            }
+            
+            .background-video {
+                object-position: center;
             }
         }
 
@@ -479,6 +528,11 @@
             .username {
                 font-size: 1.5rem;
             }
+            
+            .uid {
+                top: -25px;
+                font-size: 0.7rem;
+            }
         }
 
         /* Анимация появления */
@@ -500,6 +554,7 @@
     </style>
 </head>
 <body>
+    <!-- Видео фон - ВКЛЮЧЕНО -->
     <video autoplay muted loop playsinline class="background-video" id="bg-video">
         <source src="background.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео тег.
@@ -524,7 +579,7 @@
 
             <div class="username">
                 Alway
-                <div class="uid">UID: 0 (Tap to copy)</div>
+                <div class="uid">UID: 0</div>
             </div>
 
             <div class="badges-container">
@@ -570,14 +625,13 @@
             const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
             
             if (isTouchDevice) {
-                // Улучшения для touch устройств
                 document.body.style.cursor = 'default';
                 document.querySelectorAll('.icon').forEach(icon => {
                     icon.style.cursor = 'pointer';
                 });
             }
 
-            // Предотвращение масштабирования при двойном тапе (опционально)
+            // Предотвращение масштабирования при двойном тапе
             let lastTouchEnd = 0;
             document.addEventListener('touchend', function(event) {
                 const now = Date.now();
@@ -623,6 +677,28 @@
                 setTimeout(startAnimations, 100);
             }
         });
+
+        // Проверка загрузки видео
+        function setupVideo() {
+            const videoElement = document.getElementById('bg-video');
+            const fallbackImage = document.getElementById('fallback-image');
+            
+            videoElement.addEventListener('error', function() {
+                console.log('Video failed to load, showing fallback image');
+                fallbackImage.style.display = 'block';
+            });
+            
+            videoElement.addEventListener('loadeddata', function() {
+                console.log('Video loaded successfully');
+                fallbackImage.style.display = 'none';
+            });
+            
+            // Для мобильных - предзагрузка
+            if ('ontouchstart' in window) {
+                videoElement.preload = 'auto';
+                videoElement.load();
+            }
+        }
 
         // Частицы, реагирующие на движение мыши/тач
         class ParticleSystem {
@@ -685,10 +761,10 @@
                     particle.style.width = size + 'px';
                     particle.style.height = size + 'px';
                     
-                    // Случайный цвет
-                    const hue = Math.random() * 60 + 180; // Сине-голубые оттенки
-                    particle.style.background = `hsla(${hue}, 100%, 70%, 0.8)`;
-                    particle.style.boxShadow = `0 0 ${size * 2}px hsla(${hue}, 100%, 70%, 0.5)`;
+                    // Белые/голубые частицы для контраста с видео
+                    const hue = Math.random() * 40 + 180; // 180-220 голубые оттенки
+                    particle.style.background = `hsla(${hue}, 100%, 80%, 0.9)`;
+                    particle.style.boxShadow = `0 0 ${size * 2}px hsla(${hue}, 100%, 80%, 0.7)`;
                     
                     particle.classList.add('active');
                     
@@ -712,10 +788,23 @@
                 this.snowflakes = [];
                 this.maxSnowflakes = 30;
                 this.types = ['❄', '✦', '❅', '*', '·'];
+                this.snowflakeContainer = null;
                 this.init();
             }
 
             init() {
+                // Создаем контейнер для снежинок
+                this.snowflakeContainer = document.createElement('div');
+                this.snowflakeContainer.id = 'snowflake-container';
+                this.snowflakeContainer.style.position = 'fixed';
+                this.snowflakeContainer.style.top = '0';
+                this.snowflakeContainer.style.left = '0';
+                this.snowflakeContainer.style.width = '100%';
+                this.snowflakeContainer.style.height = '100%';
+                this.snowflakeContainer.style.pointerEvents = 'none';
+                this.snowflakeContainer.style.zIndex = '1';
+                document.body.appendChild(this.snowflakeContainer);
+
                 // Создаем снежинки
                 for (let i = 0; i < this.maxSnowflakes; i++) {
                     this.createSnowflake(i);
@@ -752,40 +841,23 @@
                     snowflake.style.animation += `, float ${Math.random() * 3 + 2}s ease-in-out infinite`;
                 }
                 
-                // Случайные цвета (белый/голубой)
+                // Белые/голубые снежинки для контраста с видео
                 const hue = Math.random() > 0.8 ? 200 : 0;
                 const saturation = Math.random() > 0.8 ? 100 : 0;
-                snowflake.style.color = `hsla(${hue}, ${saturation}%, 90%, ${snowflake.style.opacity})`;
+                const lightness = 85 + Math.random() * 15;
+                snowflake.style.color = `hsla(${hue}, ${saturation}%, ${lightness}%, ${snowflake.style.opacity})`;
                 
-                document.body.appendChild(snowflake);
+                this.snowflakeContainer.appendChild(snowflake);
                 this.snowflakes.push(snowflake);
                 
                 // Пересоздание снежинки после падения
                 setTimeout(() => {
-                    snowflake.remove();
+                    if (snowflake.parentNode) {
+                        snowflake.remove();
+                    }
                     this.createSnowflake(index);
                 }, duration * 1000);
             }
-        }
-
-        // Функция копирования UID
-        function setupUIDCopy() {
-            const uidElement = document.querySelector('.uid');
-            uidElement.addEventListener('click', function(e) {
-                e.stopPropagation();
-                navigator.clipboard.writeText('UID: 0').then(() => {
-                    const originalText = this.textContent;
-                    this.textContent = 'Copied!';
-                    this.style.color = '#4CAF50';
-                    
-                    setTimeout(() => {
-                        this.textContent = originalText;
-                        this.style.color = 'white';
-                    }, 2000);
-                }).catch(err => {
-                    console.error('Failed to copy: ', err);
-                });
-            });
         }
 
         // Управление аудио
@@ -893,40 +965,19 @@
             }
         }
 
-        // Загрузка видео с фолбэком
-        function setupVideo() {
-            const videoElement = document.getElementById('bg-video');
-            const fallbackImage = document.getElementById('fallback-image');
-            
-            videoElement.addEventListener('error', function() {
-                console.log('Video failed to load, showing fallback image');
-                fallbackImage.style.display = 'block';
-            });
-            
-            videoElement.addEventListener('loadeddata', function() {
-                console.log('Video loaded successfully');
-                fallbackImage.style.display = 'none';
-            });
-            
-            // Предзагрузка для мобильных
-            if ('ontouchstart' in window) {
-                videoElement.preload = 'auto';
-                videoElement.load();
-            }
-        }
-
         // Запуск всех анимаций после загрузки
         function startAnimations() {
+            // Настройка видео
+            setupVideo();
+            
             // Запуск систем анимаций
             window.particleSystem = new ParticleSystem();
             window.snowflakeSystem = new SnowflakeSystem();
             
             // Настройка остальных функций
-            setupUIDCopy();
             setupAudioControl();
             setupTypingText();
             setup3DEffect();
-            setupVideo();
             
             // Добавляем класс для анимации появления
             document.getElementById('content').classList.add('show');
