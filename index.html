@@ -348,7 +348,13 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
-        .social-icons .icon .social-name {
+        /* Для декоративных иконок (крылья) - НЕТ подсказки */
+        .social-icons .icon.decorative .social-name {
+            display: none !important;
+        }
+
+        /* Для соц. сетей - есть подсказка */
+        .social-icons .icon:not(.decorative) .social-name {
             position: absolute;
             top: -40px;
             left: 50%;
@@ -367,8 +373,8 @@
             z-index: 20;
         }
 
-        .social-icons .icon:hover .social-name,
-        .social-icons .icon:active .social-name {
+        .social-icons .icon:not(.decorative):hover .social-name,
+        .social-icons .icon:not(.decorative):active .social-name {
             opacity: 1;
             transform: translateX(-50%) translateY(-5px);
         }
@@ -476,7 +482,7 @@
                 padding: 4px;
             }
             
-            .social-icons .icon .social-name {
+            .social-icons .icon:not(.decorative) .social-name {
                 font-size: 0.7rem;
                 padding: 4px 8px;
                 top: -35px;
@@ -629,9 +635,9 @@
 
             <!-- Социальные иконки - уменьшенные размеры -->
             <div class="social-icons">
-                <div class="icon" title="Decor">
-                    <img src="Angle_Wing_Right.png" alt="Decor" loading="lazy">
-                    <div class="social-name">Decor</div>
+                <!-- Декоративные крылья - БЕЗ подсказки -->
+                <div class="icon decorative">
+                    <img src="Angle_Wing_Right.png" alt="Wing" loading="lazy">
                 </div>
                 <div class="icon" onclick="window.open('https://steamcommunity.com/id/korsaki/');" title="Steam">
                     <img src="steam.gif" alt="Steam" loading="lazy">
@@ -645,9 +651,9 @@
                     <img src="telegram.gif" alt="Telegram" loading="lazy">
                     <div class="social-name">Telegram</div>
                 </div>
-                <div class="icon" title="Decor">
-                    <img src="Angle_Wing_Left.png" alt="Decor" loading="lazy">
-                    <div class="social-name">Decor</div>
+                <!-- Декоративные крылья - БЕЗ подсказки -->
+                <div class="icon decorative">
+                    <img src="Angle_Wing_Left.png" alt="Wing" loading="lazy">
                 </div>
             </div>
         </div>
