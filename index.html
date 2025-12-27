@@ -19,7 +19,6 @@
             padding: 0;
             height: 100%;
             overflow-x: hidden;
-            background-color: #000;
             touch-action: manipulation;
         }
 
@@ -32,6 +31,7 @@
             overflow: hidden;
             position: relative;
             cursor: url('Cursor.cur'), auto;
+            background-color: #000; /* Запасной цвет если видео не загрузится */
         }
 
         @supports (-webkit-touch-callout: none) {
@@ -40,6 +40,7 @@
             }
         }
 
+        /* Видео фон */
         .background-video {
             position: fixed;
             top: 0;
@@ -581,6 +582,7 @@
     </style>
 </head>
 <body>
+    <!-- Видео фон активен -->
     <video autoplay muted loop playsinline class="background-video" id="bg-video">
         <source src="background.mp4" type="video/mp4">
         Ваш браузер не поддерживает видео тег.
