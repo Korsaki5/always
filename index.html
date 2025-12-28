@@ -558,26 +558,28 @@
             animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        /* Анимации для снежинок - РАБОТАЮЩИЕ! */
+        /* Анимации для снежинок - ИСПРАВЛЕННЫЕ! */
         .snowflake {
             position: fixed;
-            top: -10%;
+            top: -50px;
             color: #fff;
             font-size: 1rem;
-            animation: fall linear infinite, wobble ease-in-out infinite;
+            animation: fall linear forwards, wobble ease-in-out infinite;
             pointer-events: none;
             user-select: none;
             z-index: 1;
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-            will-change: transform;
+            will-change: transform, top;
         }
 
         @keyframes fall {
             0% {
                 transform: translateY(0) rotate(0deg);
+                top: -50px;
             }
             100% {
-                transform: translateY(110vh) rotate(360deg);
+                transform: translateY(calc(100vh + 50px)) rotate(360deg);
+                top: 100vh;
             }
         }
 
@@ -585,8 +587,11 @@
             0%, 100% {
                 transform: translateX(0);
             }
-            50% {
-                transform: translateX(calc(var(--wobble-intensity, 10px) * 2));
+            25% {
+                transform: translateX(-10px);
+            }
+            75% {
+                transform: translateX(10px);
             }
         }
 
@@ -595,7 +600,7 @@
                 transform: translateY(0);
             }
             50% {
-                transform: translateY(-10px);
+                transform: translateY(-5px);
             }
         }
     </style>
@@ -805,7 +810,10 @@
             });
         }
 
-        // Функция для создания снежинок - ВЕРНУЛ!
+        // Функция для создания снежинок - ПОЛНОСТЬЮ ИСПРАВЛЕНА!
+        let snowflakeInterval = null;
+        let snowflakes = [];
+        
         function createSnowflake() {
             const snowflake = document.createElement('div');
             snowflake.className = 'snowflake';
@@ -816,52 +824,92 @@
             snowflake.innerHTML = symbol;
             
             // Случайная позиция по горизонтали
-            snowflake.style.left = `${Math.random() * 100}vw`;
+            const leftPosition = Math.random() * 100;
+            snowflake.style.left = `${leftPosition}vw`;
             
             // Разная скорость падения
-            const duration = Math.random() * 10 + 10;
+            const duration = Math.random() * 5 + 8; // 8-13 секунд
             snowflake.style.animationDuration = `${duration}s`;
             
             // Разный размер
-            const size = Math.random() * 20 + 10;
+            const size = Math.random() * 15 + 12; // 12-27px
             snowflake.style.fontSize = `${size}px`;
             
             // Разная прозрачность
-            snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+            const opacity = Math.random() * 0.5 + 0.4; // 0.4-0.9
+            snowflake.style.opacity = opacity;
             
             // Разная интенсивность колебаний
-            snowflake.style.setProperty('--wobble-intensity', `${Math.random() * 20}px`);
+            const wobbleSpeed = Math.random() * 3 + 2; // 2-5 секунд
+            snowflake.style.animation = `fall ${duration}s linear forwards, wobble ${wobbleSpeed}s ease-in-out infinite`;
             
-            // Дополнительная анимация для некоторых снежинок
+            // Добавляем дополнительную анимацию для некоторых снежинок
             if (Math.random() > 0.7) {
-                snowflake.style.animation += `, float ${Math.random() * 3 + 2}s ease-in-out infinite`;
+                snowflake.style.animation += `, float ${Math.random() * 2 + 1.5}s ease-in-out infinite`;
             }
             
-            // Разные цвета (белые/голубые)
-            const hue = Math.random() > 0.8 ? 200 : 0;
-            const saturation = Math.random() > 0.8 ? 100 : 0;
-            snowflake.style.color = `hsla(${hue}, ${saturation}%, 85%, ${snowflake.style.opacity})`;
+            // Разные цвета (белые/голубые) - более яркие для контраста с видео
+            const hue = Math.random() > 0.7 ? 190 + Math.random() * 40 : 0;
+            const saturation = Math.random() > 0.7 ? 70 + Math.random() * 30 : 0;
+            const lightness = 85 + Math.random() * 15;
+            snowflake.style.color = `hsla(${hue}, ${saturation}%, ${lightness}%, ${opacity})`;
             
             // Добавляем на страницу
             document.body.appendChild(snowflake);
+            snowflakes.push(snowflake);
             
             // Удаляем через время для производительности
             setTimeout(() => {
                 if (snowflake.parentNode) {
                     snowflake.remove();
+                    const index = snowflakes.indexOf(snowflake);
+                    if (index > -1) {
+                        snowflakes.splice(index, 1);
+                    }
                 }
             }, duration * 1000);
+            
+            return snowflake;
         }
 
-        // Запуск снежинок
+        // Запуск снежинок - ИСПРАВЛЕНО!
         function startSnowflakes() {
+            // Очищаем предыдущие снежинки если есть
+            if (snowflakeInterval) {
+                clearInterval(snowflakeInterval);
+            }
+            
+            // Очищаем все существующие снежинки
+            snowflakes.forEach(snowflake => {
+                if (snowflake.parentNode) {
+                    snowflake.remove();
+                }
+            });
+            snowflakes = [];
+            
             // Создаем несколько снежинок сразу
-            for (let i = 0; i < 15; i++) {
-                setTimeout(() => createSnowflake(), i * 200);
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => createSnowflake(), i * 150);
             }
             
             // Продолжаем создавать снежинки
-            setInterval(createSnowflake, 300);
+            snowflakeInterval = setInterval(createSnowflake, 300);
+        }
+
+        // Остановка снежинок
+        function stopSnowflakes() {
+            if (snowflakeInterval) {
+                clearInterval(snowflakeInterval);
+                snowflakeInterval = null;
+            }
+            
+            // Удаляем все снежинки
+            snowflakes.forEach(snowflake => {
+                if (snowflake.parentNode) {
+                    snowflake.remove();
+                }
+            });
+            snowflakes = [];
         }
 
         // Touch оптимизация для мобильных
@@ -899,7 +947,7 @@
             // Запускаем печать текста
             setTimeout(type, 500);
             
-            // Запускаем снежинки - ВЕРНУЛ!
+            // Запускаем снежинки - ТЕПЕРЬ РАБОТАЕТ!
             startSnowflakes();
             
             // Автоматическое отображение кнопки аудио
